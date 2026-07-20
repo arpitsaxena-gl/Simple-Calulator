@@ -1,21 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ButtonsContainer from "./components/ButtonsContainer";
 import DisplayContainer from "./components/DisplayContainer";
+import {
+  OPERATORS,
+  MAX_EXPRESSION_LENGTH,
+  endsWithOperator,
+  lastNumberSegment,
+  calculate,
+} from "./utils/calculate";
 import "./styles.css";
-
-const OPERATORS = ["+", "-", "*", "/"];
-
-function endsWithOperator(expression) {
-  const trimmed = expression.trimEnd();
-  return OPERATORS.some(
-    (op) => trimmed.endsWith(` ${op}`) || trimmed.endsWith(` ${op} `)
-  );
-}
-
-function lastNumberSegment(expression) {
-  const parts = expression.trim().split(" ");
-  return parts[parts.length - 1] || "";
-}
 
 function App() {
   const [display, setDisplay] = useState("");
@@ -24,7 +17,11 @@ function App() {
   displayRef.current = display;
 
   const handleDigit = useCallback((digit) => {
-    setDisplay((prev) => prev + String(digit));
+    setDisplay((prev) => {
+      const next = prev + String(digit);
+      if (next.length > MAX_EXPRESSION_LENGTH) return prev;
+      return next;
+    });
     setResult("");
   }, []);
 
@@ -32,10 +29,12 @@ function App() {
     setDisplay((prev) => {
       const segment = lastNumberSegment(prev);
       if (segment.includes(".")) return prev;
+      let addition = ".";
       if (prev === "" || endsWithOperator(prev) || prev.endsWith(" ")) {
-        return prev + "0.";
+        addition = "0.";
       }
-      return prev + ".";
+      if ((prev + addition).length > MAX_EXPRESSION_LENGTH) return prev;
+      return prev + addition;
     });
     setResult("");
   }, []);
@@ -44,65 +43,19 @@ function App() {
     setDisplay((prev) => {
       if (prev === "" || endsWithOperator(prev)) return prev;
       const normalized = prev.trimEnd();
-      return `${normalized} ${operator} `;
+      const next = `${normalized} ${operator} `;
+      if (next.length > MAX_EXPRESSION_LENGTH) return prev;
+      return next;
     });
     setResult("");
-  }, []);
-
-  const calculate = useCallback((expression) => {
-    const tokens = expression.trim().split(/\s+/).filter(Boolean);
-    if (tokens.length === 0) return "";
-
-    let resultValue = parseFloat(tokens[0]);
-    if (Number.isNaN(resultValue)) {
-      throw new Error("Invalid expression");
-    }
-
-    for (let i = 1; i < tokens.length; i += 2) {
-      const operator = tokens[i];
-      const nextNumber = parseFloat(tokens[i + 1]);
-
-      if (Number.isNaN(nextNumber)) {
-        throw new Error("Invalid expression");
-      }
-
-      switch (operator) {
-        case "+":
-          resultValue += nextNumber;
-          break;
-        case "-":
-          resultValue -= nextNumber;
-          break;
-        case "*":
-          resultValue *= nextNumber;
-          break;
-        case "/":
-          if (nextNumber === 0) {
-            throw new Error("Division by zero");
-          }
-          resultValue /= nextNumber;
-          break;
-        default:
-          throw new Error("Unknown operator");
-      }
-    }
-
-    if (!Number.isFinite(resultValue)) {
-      throw new Error("Invalid result");
-    }
-
-    return Number(Number(resultValue.toPrecision(12)).toString());
   }, []);
 
   const handleEqual = useCallback(() => {
     const prev = displayRef.current;
     if (!prev || endsWithOperator(prev)) return;
-    try {
-      setResult(String(calculate(prev)));
-    } catch {
-      setResult("Error");
-    }
-  }, [calculate]);
+    const value = calculate(prev);
+    setResult(value === "" ? "" : String(value));
+  }, []);
 
   const clear = useCallback(() => {
     setDisplay("");
@@ -111,6 +64,7 @@ function App() {
 
   const backspace = useCallback(() => {
     setDisplay((prev) => prev.slice(0, -1));
+    setResult("");
   }, []);
 
   const handleClick = useCallback(
@@ -143,7 +97,7 @@ function App() {
       } else if (key === "Backspace") {
         event.preventDefault();
         backspace();
-      } else if (key === "Escape" || key.toLowerCase() === "c") {
+      } else if (key === "Escape") {
         event.preventDefault();
         clear();
       }
