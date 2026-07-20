@@ -4,12 +4,19 @@ This is a simple calculator app built using React. It performs basic arithmetic 
 
 ![image](https://github.com/DevAbdurR/Simple-Calulator/assets/112758727/983f51ed-af0c-4692-aa80-45019ca12c97)
 
-
 ## Features
 
 - Addition, subtraction, multiplication, and division operations.
+- Decimal numbers (`.` key; at most one decimal point per number).
 - Responsive design for various screen sizes.
 - Clear button to reset the calculator.
+- Clear `"Error"` result for divide-by-zero and invalid expressions (never Infinity or NaN).
+
+## Evaluation policy
+
+- Expressions are evaluated **left-to-right** (not PEMDAS). Example: `1 + 2 * 3` equals `9`, not `7`.
+- Pressing `=` with a trailing operator (`+`, `-`, `*`, `/`) is a soft no-op — the expression is unchanged.
+- On a successful equals, the expression is cleared and the result is shown. On error, the expression stays editable.
 
 ## Demo
 
@@ -36,6 +43,13 @@ To get a local copy up and running, follow these steps:
 1. Click the buttons to input numbers and operators.
 2. Click "=" to get the result of the calculation.
 3. Click "AC" to clear the input and reset the calculator.
+
+## Testing
+
+```bash
+npm test -- --watchAll=false
+npm run build
+```
 
 ## Contributing
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-function Button({ handleClick, name, value, className, calc }) {
+function Button({ handleClick, name, value, className }) {
   return (
     <>
       <button className={className} onClick={handleClick} name={name}>
