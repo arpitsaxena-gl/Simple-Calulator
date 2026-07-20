@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import ButtonsContainer from "./components/ButtonsContainer";
 import DisplayContainer from "./components/DisplayContainer";
+import {
+  appendDigit,
+  appendOperator,
+  calculate,
+  endsWithOperator,
+  formatResult,
+  tokenAwareBackspace,
+} from "./utils/calculate";
 import "./styles.css";
 
 function App() {
@@ -8,62 +16,27 @@ function App() {
   const [result, setResult] = useState("");
 
   function handleClick(e) {
-    const targetValue = e.target.name;
-    setDisplay(display + targetValue);
+    const targetValue = String(e.target.name);
+    setDisplay((prev) => appendDigit(prev, targetValue));
   }
 
   function operatorClick(operator) {
-    let lastCharacter = display.slice(-2);
-    let operatorsArray = ["+ ", "- ", "* ", "/ "];
-
-    console.log(lastCharacter);
-
-    if (display === "" || operatorsArray.includes(lastCharacter)) return;
-
-    setDisplay((prevDisplay) => {
-      return prevDisplay + " " + operator + " ";
-    });
+    setDisplay((prev) => appendOperator(prev, operator));
   }
 
   function handleEqual() {
-    if (display.slice(-2).includes("+ ", "- ", "* ", "/ ")) return;
-
-    setDisplay("");
-
-    try {
-      const resultValue = calculate(display);
-      setResult(resultValue);
-    } catch (error) {
-      setDisplay("Error");
-    }
-  }
-
-  function calculate(expression) {
-    const tokens = expression.split(" ");
-    let resultValue = parseInt(tokens[0]);
-
-    for (let i = 1; i < tokens.length; i += 2) {
-      const operator = tokens[i];
-      const nextNumber = parseInt(tokens[i + 1]);
-
-      switch (operator) {
-        case "+":
-          resultValue += nextNumber;
-          break;
-        case "-":
-          resultValue -= nextNumber;
-          break;
-        case "*":
-          resultValue *= nextNumber;
-          break;
-        case "/":
-          resultValue /= nextNumber;
-          break;
-        default:
-          resultValue = "Error";
+    setDisplay((prev) => {
+      if (prev === "" || endsWithOperator(prev)) {
+        return prev;
       }
-    }
-    return resultValue;
+      const outcome = calculate(prev);
+      if (outcome.ok) {
+        setResult(formatResult(outcome.value));
+        return "";
+      }
+      setResult("Error");
+      return prev;
+    });
   }
 
   function clear() {
@@ -72,7 +45,7 @@ function App() {
   }
 
   function backspace() {
-    setDisplay(display.slice(0, -1));
+    setDisplay((prev) => tokenAwareBackspace(prev));
   }
 
   return (
