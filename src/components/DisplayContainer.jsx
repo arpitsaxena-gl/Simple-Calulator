@@ -7,8 +7,12 @@ function DisplayContainer({ display, result, backspace, clear }) {
         <div className="input-field" data-empty={!display}>
           {display || "0"}
         </div>
-        <div className={`answer-field${result ? " has-result" : ""}`}>
-          {result !== "" ? result : "\u00A0"}
+        <div
+          className={`answer-field${result ? " has-result" : ""}${
+            result === "Error" ? " result--error" : ""
+          }`}
+        >
+          {result !== "" ? String(result) : "\u00A0"}
         </div>
       </div>
       <div className="other-btns">
