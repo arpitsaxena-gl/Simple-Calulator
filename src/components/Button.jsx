@@ -1,12 +1,16 @@
 import React from "react";
 
-function Button({ handleClick, name, value, className, calc }) {
+function Button({ handleClick, name, value, className = "", ariaLabel }) {
   return (
-    <>
-      <button className={className} onClick={handleClick} name={name}>
-        {value}
-      </button>
-    </>
+    <button
+      type="button"
+      className={`calc-btn ${className}`.trim()}
+      onClick={handleClick}
+      name={name}
+      aria-label={ariaLabel || String(value)}
+    >
+      <span className="calc-btn-label">{value}</span>
+    </button>
   );
 }
 
