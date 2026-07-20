@@ -4,9 +4,10 @@
   --bg-display: #0a0f0d;
   --ink: #e8f0ec;
   --ink-muted: #8fa399;
-  --accent: #3ecf8e;
-  --accent-dim: #1f6b4a;
-  --op: #2a9d8f;
+  --accent: #0d9488;
+  --accent-dim: #0f766e;
+  --accent-bright: #14b8a6;
+  --op: #0d9488;
   --danger: #e07a5f;
   --radius: 18px;
   --radius-sm: 12px;
@@ -43,8 +44,8 @@ body {
   min-height: 100dvh;
   overflow: hidden;
   background:
-    radial-gradient(1200px 600px at 50% -10%, rgba(62, 207, 142, 0.16), transparent 60%),
-    radial-gradient(800px 500px at 90% 80%, rgba(42, 157, 143, 0.1), transparent 55%),
+    radial-gradient(1200px 600px at 50% -10%, rgba(13, 148, 136, 0.18), transparent 60%),
+    radial-gradient(800px 500px at 90% 80%, rgba(15, 118, 110, 0.12), transparent 55%),
     linear-gradient(165deg, #0c1210 0%, #101816 45%, #0a100e 100%);
 }
 
@@ -55,7 +56,7 @@ body {
   width: min(70vw, 420px);
   height: 180px;
   transform: translateX(-50%);
-  background: radial-gradient(closest-side, rgba(62, 207, 142, 0.18), transparent);
+  background: radial-gradient(closest-side, rgba(13, 148, 136, 0.2), transparent);
   filter: blur(20px);
   animation: glow-breathe 4.5s ease-in-out infinite;
 }
@@ -106,7 +107,8 @@ body {
 }
 
 .calculator {
-  width: min(100%, 380px);
+  width: min(100%, 22rem);
+  max-width: 28rem;
   padding: 1rem;
   border-radius: calc(var(--radius) + 6px);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 40%),
@@ -176,8 +178,13 @@ body {
 }
 
 .answer-field.has-result {
-  color: var(--accent);
+  color: var(--accent-bright);
   animation: result-pop 0.35s ease;
+}
+
+.answer-field.result--error {
+  color: var(--danger);
+  font-weight: 700;
 }
 
 @keyframes result-pop {
@@ -245,12 +252,12 @@ body {
 }
 
 .op-btn {
-  background: rgba(42, 157, 143, 0.22);
-  color: #9aefe0;
+  background: rgba(13, 148, 136, 0.22);
+  color: #99f6e4;
 }
 
 .op-btn:hover {
-  background: rgba(42, 157, 143, 0.34);
+  background: rgba(13, 148, 136, 0.34);
 }
 
 .util-btn {
@@ -264,13 +271,13 @@ body {
 }
 
 .equals-btn {
-  background: linear-gradient(160deg, var(--accent) 0%, var(--accent-dim) 100%);
-  color: #062016;
-  box-shadow: 0 8px 20px rgba(62, 207, 142, 0.28);
+  background: linear-gradient(160deg, var(--accent-bright) 0%, var(--accent-dim) 100%);
+  color: #042f2e;
+  box-shadow: 0 8px 20px rgba(13, 148, 136, 0.28);
 }
 
 .equals-btn:hover {
-  background: linear-gradient(160deg, #55db9e 0%, #26855c 100%);
+  background: linear-gradient(160deg, #2dd4bf 0%, #0f766e 100%);
 }
 
 .equals-btn:active {
