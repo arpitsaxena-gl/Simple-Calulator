@@ -2,22 +2,36 @@ import React from "react";
 
 function DisplayContainer({ display, result, backspace, clear }) {
   return (
-    <>
-      <div className="display-container">
-        <div className="display">
-          <div className="input-field">{display}</div>
-          <div className="answer-field">{result}</div>
+    <div className="display-container">
+      <div className="display" aria-live="polite" aria-atomic="true">
+        <div className="input-field" data-empty={!display}>
+          {display || "0"}
         </div>
-        <div className="other-btns">
-          <button className="colored-btn" onClick={backspace}>
-            <i className="material-icons">backspace</i>
-          </button>
-          <button onClick={clear} className="AC-btn colored-btn">
-            AC
-          </button>
+        <div className={`answer-field${result ? " has-result" : ""}`}>
+          {result !== "" ? result : "\u00A0"}
         </div>
       </div>
-    </>
+      <div className="other-btns">
+        <button
+          type="button"
+          className="calc-btn util-btn"
+          onClick={backspace}
+          aria-label="Backspace"
+        >
+          <span className="calc-btn-label" aria-hidden="true">
+            ⌫
+          </span>
+        </button>
+        <button
+          type="button"
+          className="calc-btn util-btn AC-btn"
+          onClick={clear}
+          aria-label="All clear"
+        >
+          <span className="calc-btn-label">AC</span>
+        </button>
+      </div>
+    </div>
   );
 }
 
